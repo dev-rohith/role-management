@@ -11,20 +11,18 @@ export const comparePassword = async (
   password: string,
   hash: string
 ): Promise<boolean> => {
-  return await bcrypt.compare(password, hash);
+  // TODO: Implement password comparison using bcrypt.compare
 };
 
+
 export const generateToken = (userId: string): string => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "24h" });
+  // TODO: Generate a JWT token signed with JWT_SECRET, expires in 24h
 };
 
 export const generateId = (): string => uuidv4();
 
 export const excludePassword = (user: User): UserWithoutPassword => {
-  const { password, ...userWithoutPassword } = user;
-  return {
-    ...userWithoutPassword,
-    id: user.id.toString() 
-  };
+  // TODO: Return user object without the password field
+  // Also ensure id is returned as a string
 };
 

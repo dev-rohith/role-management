@@ -1,5 +1,10 @@
 import { InsertUser } from "../models/schema";
 
+// TODO: Review this entire types file carefully don't blindly go with this types.
+// TODO: Use the types below as a reference, but feel free to create your own. This will help assess your TypeScript skills.
+// TODO: Ensure that all imported types like InsertUser match your database schema exactly.
+// TODO: Ensure No red marks in any where in the code red mark -> dangerous
+
 export interface User {
   id: string;
   email: string;

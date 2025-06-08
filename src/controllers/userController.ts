@@ -5,38 +5,41 @@ import { AppError } from '../utils/errors';
 import { validateUpdateRole, validateUpdateStatus } from '../utils/validation';
 
 export class UserController {
-  // PUT /api/users/:id/role
   static async updateUserRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = req.params.id as string
+      const userId = req.params.id as string;
       const currentUser = (req as any).user as AuthenticatedUser;
       const { role }: UpdateRoleRequest = req.body;
 
-      // Validate request
+      // Validate role (TODO: complete validation logic in utils/validation)
+
       const validation = validateUpdateRole({ role });
       if (!validation.success) {
         throw new AppError('Invalid role', 400);
       }
 
-      // Check authorization
+      // TODO: Implement authorization check for changing roles
+
       if (!UserService.canChangeRole(currentUser, role)) {
         throw new AppError('Insufficient permissions', 403);
       }
 
-      // Get target user
+      // TODO: Fetch user and validate if modifiable
+
       const targetUser = await UserService.getUserById(userId);
       if (!targetUser) {
         throw new AppError('User not found', 404);
       }
-
-      // Check if can modify this user
       if (!UserService.canModifyUser(currentUser, targetUser)) {
         throw new AppError('Cannot modify this user', 403);
       }
 
-      // Update role
+      // TODO: Implement update role in UserService and return updated user
+
       const updatedUser = await UserService.updateUserRole(userId, role);
 
+      //TODO: Hide password before sending response
+
       res.json({
         success: true,
         data: { ...updatedUser, password: undefined }
@@ -46,53 +49,24 @@ export class UserController {
     }
   }
 
-  // PUT /api/users/:id/status
   static async updateUserStatus(req: Request, res: Response, next: NextFunction) {
-    try {
-      const userId = req.params.id as string
-      const currentUser = (req as any).user as AuthenticatedUser;
-      const { status }: UpdateStatusRequest = req.body;
-
-      // Validate request
-      const validation = validateUpdateStatus({ status });
-      if (!validation.success) {
-        throw new AppError('Invalid status', 400);
-      }
-
-      // Get target user
-      const targetUser = await UserService.getUserById(userId);
-      if (!targetUser) {
-        throw new AppError('User not found', 404);
-      }
-
-      // Check authorization
-      if (!UserService.canChangeStatus(currentUser, targetUser)) {
-        throw new AppError('Insufficient permissions', 403);
-      }
-
-      // Update status
-      const updatedUser = await UserService.updateUserStatus(userId, status);
-
-      res.json({
-        success: true,
-        data: { ...updatedUser, password: undefined }
-      });
-    } catch (error) {
-      next(error);
-    }
+    //TODO:
+    // NOTE: Method implementation is incomplete, you should:
+    // 1. Validate status from req.body
+    // 2. Check permissions with UserService.canChangeStatus
+    // 3. Get target user and verify existence
+    // 4. Update status and respond without password
+    
+    next(new AppError('updateUserStatus not implemented yet', 501));
   }
 
-  // GET /api/users/:id
   static async getUserProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = req.params.id as string
+      const userId = req.params.id as string;
       const currentUser = (req as any).user as AuthenticatedUser;
 
-      // Check authorization - can view own profile or admin/super_admin can view any
-      const canView = currentUser.id === userId || 
-                     currentUser.role === 'admin' || 
-                     currentUser.role === 'super_admin';
-         console.log(userId)
+      // Authorization: can view own profile or admin/super_admin can view any
+      const canView = currentUser.id === userId || currentUser.role === 'admin' || currentUser.role === 'super_admin';
       if (!canView) {
         throw new AppError('Insufficient permissions', 403);
       }
@@ -111,12 +85,11 @@ export class UserController {
     }
   }
 
-  // GET /api/users
   static async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const currentUser = (req as any).user as AuthenticatedUser;
 
-      // Check authorization - only admin/super_admin can list users
+      // Only admin or super_admin can get the list
       if (currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
         throw new AppError('Insufficient permissions', 403);
       }

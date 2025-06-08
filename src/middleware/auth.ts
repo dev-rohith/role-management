@@ -7,6 +7,7 @@ import { User } from '../types/index';
 export interface AuthenticatedRequest extends Request {
   user?: User;
 }
+
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -14,26 +15,22 @@ export const authenticateToken = async (
 ): Promise<void> => {
   try {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1] as string;
+    // TODO: Extract token from authHeader
 
     if (!token) {
       throw new UnauthorizedError('Access token required');
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-    const user = await UserModel.findById(decoded.userId);
-    
-    if (!user || user.status === 'inactive') {
-      throw new UnauthorizedError('User not found or inactive');
-    }
+    // TODO: Verify JWT token
 
-    req.user = user;
+    // TODO: Fetch user by ID from token payload
+
+    // TODO: Check if user exists and is active
+
+    // TODO: Attach user to req.user
+
     next();
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      next(new UnauthorizedError('Invalid token'));
-    } else {
-      next(error);
-    }
+    // TODO: Handle JWT errors and forward other errors
   }
 };

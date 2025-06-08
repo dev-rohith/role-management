@@ -59,6 +59,13 @@ async function seed(): Promise<void> {
 
     for (const userData of seedUsers) {
       const hashedPassword = await hashPassword(userData.password);
+      const existingUser = await UserModel.findByEmail(userData.email);
+      if (existingUser) {
+        console.log(
+          `User with email ${userData.email} already exists. Skipping...`
+        );
+        continue;
+      }
       await UserModel.create({
         ...userData,
         password: hashedPassword,
