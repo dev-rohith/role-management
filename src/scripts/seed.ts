@@ -1,8 +1,7 @@
-// src/scripts/seed.ts
-import { UserModel } from "../models/user.js";
-import { hashPassword, generateId } from "../utils/helpers.js";
+import { UserModel } from "../models/user";
+import { hashPassword, generateId } from "../utils/helpers";
 import dotenv from "dotenv";
-import type { CreateUserData } from "../../types/index.js";
+import type { CreateUserData } from "../types/index";
 
 dotenv.config();
 

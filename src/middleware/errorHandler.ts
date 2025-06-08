@@ -1,6 +1,5 @@
-// src/middleware/errorHandler.ts
 import type { Request, Response, NextFunction } from 'express';
-import { AppError } from '../utils/errors.js';
+import { AppError } from '../utils/errors';
 
 export const errorHandler = (
   error: Error,
@@ -8,17 +7,18 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
+  const isDev = process.env.NODE_ENV === 'development';
+
   if (error instanceof AppError) {
     res.status(error.statusCode).json({
-      error: error.message,
-      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+      message: error.message,
+      ...(isDev && { stack: error.stack })
     });
-    return;
+  } else {
+    console.error('Unhandled error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      ...(isDev && { stack: error.stack })
+    });
   }
-
-  console.error('Unhandled error:', error);
-  res.status(500).json({
-    error: 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
-  });
 };

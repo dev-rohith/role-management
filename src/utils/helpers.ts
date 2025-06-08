@@ -1,8 +1,7 @@
-// src/utils/helpers.ts
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import type { User, UserWithoutPassword } from "../../types/index.js";
+import type { User, UserWithoutPassword } from "../types/index";
 
 export const hashPassword = async (password: string): Promise<string> => {
   return await bcrypt.hash(password, 12);
@@ -23,5 +22,9 @@ export const generateId = (): string => uuidv4();
 
 export const excludePassword = (user: User): UserWithoutPassword => {
   const { password, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+  return {
+    ...userWithoutPassword,
+    id: user.id.toString() 
+  };
 };
+

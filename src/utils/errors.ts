@@ -1,19 +1,13 @@
-// src/utils/errors.ts
 export class AppError extends Error {
-  constructor(
-    public message: string,
-    public statusCode: number,
-    public isOperational: boolean = true
-  ) {
-    super(message);
-    Object.setPrototypeOf(this, AppError.prototype);
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
+  statusCode: number;
+  isOperational: boolean;
 
-export class ValidationError extends AppError {
-  constructor(message: string) {
-    super(message, 400);
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+    this.isOperational = true;
+
+    Error.captureStackTrace(this, this.constructor);
   }
 }
 
@@ -24,13 +18,19 @@ export class UnauthorizedError extends AppError {
 }
 
 export class ForbiddenError extends AppError {
-  constructor(message = 'Access forbidden') {
+  constructor(message = 'Forbidden') {
     super(message, 403);
   }
 }
 
-export class NotFoundError extends AppError {
-  constructor(message = 'Resource not found') {
-    super(message, 404);
+export class ValidationError extends AppError {
+  constructor(message = 'Validation failed') {
+    super(message, 400);
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message = 'Conflict') {
+    super(message, 409);
   }
 }

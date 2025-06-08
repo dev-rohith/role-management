@@ -1,18 +1,17 @@
-// src/server.ts
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import authRoutes from './routes/auth';
+import userRoutes from './routes/users';
+import { errorHandler } from './middleware/errorHandler';
+import { checkDbConnection } from './config/database';
 import dotenv from 'dotenv';
-
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/users.js';
-import { errorHandler } from './middleware/errorHandler.js';
-
 dotenv.config();
 
+
+
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Security middleware
 app.use(helmet());
@@ -34,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-// Health check
+// Health check dummy route
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
@@ -47,8 +46,14 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+checkDbConnection()
+
+if (require.main === module) {  
+  const PORT = process.env.PORT ?? 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
 
 export default app;

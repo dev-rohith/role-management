@@ -1,21 +1,22 @@
-// src/routes/users.ts
-import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
-import { authorizeRoles } from '../middleware/authorize.js';
-import {
-  updateUserRole,
-  updateUserStatus,
-  getUserProfile,
-  getAllUsers
-} from '../controllers/userController.js';
+import { Router } from 'express';
+import { UserController } from '../controllers/userController';
+import { authenticateToken } from '../middleware/auth';
 
-const router = express.Router();
+const router = Router();
 
-// TODO: Implement these routes with proper authorization
-// Consider which routes need specific role authorization
-router.put('/:id/role', authenticateToken, updateUserRole);
-router.put('/:id/status', authenticateToken, updateUserStatus); 
-router.get('/:id', authenticateToken, getUserProfile);
-router.get('/', authenticateToken, getAllUsers);
+// All routes require authentication
+router.use(authenticateToken);
+
+// Update user role (super admin only)
+router.put('/:id/role', UserController.updateUserRole);
+
+// Update user status (admin/super admin with restrictions)
+router.put('/:id/status', UserController.updateUserStatus);
+
+// Get user profile (own profile or admin/super admin)
+router.get('/:id', UserController.getUserProfile);
+
+// List all users (admin/super admin only)
+router.get('/', UserController.getAllUsers);
 
 export default router;

@@ -1,8 +1,7 @@
-// tests/setup.ts
-import { db } from '../src/models/database.js';
-import { users } from '../src/models/schema.js';
-import { hashPassword, generateId } from '../src/utils/helpers.js';
-import type { User, CreateUserData, UserRole, UserStatus } from '../src/types/index.js';
+import { db } from '../src/config/database';
+import { users } from '../src/models/schema';
+import { hashPassword, generateId } from '../src/utils/helpers';
+import type { User, CreateUserData, UserRole, UserStatus } from '../src/types';
 
 interface TestUserData extends Partial<CreateUserData> {
   email: string;
@@ -25,7 +24,7 @@ export const createTestUser = async (userData: TestUserData): Promise<User> => {
   };
   
   const result = await db.insert(users).values(user).returning();
-  return result[0]!;
+  return result[0];
 };
 
 export const cleanupUsers = async (): Promise<void> => {

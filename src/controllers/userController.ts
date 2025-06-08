@@ -1,98 +1,134 @@
-// src/controllers/userController.ts
-import type { Request, Response, NextFunction } from "express";
-import { UserModel } from "../models/user.js";
-import { updateRoleSchema, updateStatusSchema } from "../utils/validation.js";
-import { excludePassword } from "../utils/helpers.js";
-import {
-  ValidationError,
-  ForbiddenError,
-  NotFoundError,
-} from "../utils/errors.js";
-import type {
-  UpdateUserRoleData,
-  UpdateUserStatusData,
-  UserWithoutPassword,
-  UserRole,
-} from "../../types/index.js";
+import { Request, Response, NextFunction } from 'express';
+import { UserService } from '../services/userService';
+import { AuthenticatedUser, UpdateRoleRequest, UpdateStatusRequest } from '../types';
+import { AppError } from '../utils/errors';
+import { validateUpdateRole, validateUpdateStatus } from '../utils/validation';
 
-export const updateUserRole = async (
-  req: Request<{ id: string }, UserWithoutPassword, UpdateUserRoleData>,
-  res: Response<UserWithoutPassword>,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    // TODO: Implement role update logic
-    // Requirements:
-    // - Only super admin can update roles
-    // - Validate the new role using updateRoleSchema
-    // - Cannot change own role
-    // - Find target user and validate they exist
-    // - Update the user's role
-    // - Return updated user without password
+export class UserController {
+  // PUT /api/users/:id/role
+  static async updateUserRole(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id as string
+      const currentUser = (req as any).user as AuthenticatedUser;
+      const { role }: UpdateRoleRequest = req.body;
 
-    res.status(501).json({ error: "Not implemented" } as any);
-  } catch (error) {
-    next(error);
+      // Validate request
+      const validation = validateUpdateRole({ role });
+      if (!validation.success) {
+        throw new AppError('Invalid role', 400);
+      }
+
+      // Check authorization
+      if (!UserService.canChangeRole(currentUser, role)) {
+        throw new AppError('Insufficient permissions', 403);
+      }
+
+      // Get target user
+      const targetUser = await UserService.getUserById(userId);
+      if (!targetUser) {
+        throw new AppError('User not found', 404);
+      }
+
+      // Check if can modify this user
+      if (!UserService.canModifyUser(currentUser, targetUser)) {
+        throw new AppError('Cannot modify this user', 403);
+      }
+
+      // Update role
+      const updatedUser = await UserService.updateUserRole(userId, role);
+
+      res.json({
+        success: true,
+        data: { ...updatedUser, password: undefined }
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-};
 
-export const updateUserStatus = async (
-  req: Request<{ id: string }, UserWithoutPassword, UpdateUserStatusData>,
-  res: Response<UserWithoutPassword>,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    // TODO: Implement status update logic
-    // Requirements:
-    // - Super admin can activate/deactivate anyone
-    // - Admin can only deactivate regular users (not reactivate)
-    // - Cannot deactivate yourself
-    // - Validate the new status using updateStatusSchema
-    // - Check permissions based on current user role and target user role
-    // - Update the user's status
-    // - Return updated user without password
+  // PUT /api/users/:id/status
+  static async updateUserStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id as string
+      const currentUser = (req as any).user as AuthenticatedUser;
+      const { status }: UpdateStatusRequest = req.body;
 
-    res.status(501).json({ error: "Not implemented" } as any);
-  } catch (error) {
-    next(error);
+      // Validate request
+      const validation = validateUpdateStatus({ status });
+      if (!validation.success) {
+        throw new AppError('Invalid status', 400);
+      }
+
+      // Get target user
+      const targetUser = await UserService.getUserById(userId);
+      if (!targetUser) {
+        throw new AppError('User not found', 404);
+      }
+
+      // Check authorization
+      if (!UserService.canChangeStatus(currentUser, targetUser)) {
+        throw new AppError('Insufficient permissions', 403);
+      }
+
+      // Update status
+      const updatedUser = await UserService.updateUserStatus(userId, status);
+
+      res.json({
+        success: true,
+        data: { ...updatedUser, password: undefined }
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-};
 
-export const getUserProfile = async (
-  req: Request<{ id: string }>,
-  res: Response<UserWithoutPassword>,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    // TODO: Implement get user profile logic
-    // Requirements:
-    // - Users can only view their own profile
-    // - Admins and super admins can view any profile
-    // - Return user without password
-    // - Return 404 if user not found
-    // - Check authorization based on current user role and requested user id
+  // GET /api/users/:id
+  static async getUserProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id as string
+      const currentUser = (req as any).user as AuthenticatedUser;
 
-    res.status(501).json({ error: "Not implemented" } as any);
-  } catch (error) {
-    next(error);
+      // Check authorization - can view own profile or admin/super_admin can view any
+      const canView = currentUser.id === userId || 
+                     currentUser.role === 'admin' || 
+                     currentUser.role === 'super_admin';
+         console.log(userId)
+      if (!canView) {
+        throw new AppError('Insufficient permissions', 403);
+      }
+
+      const user = await UserService.getUserById(userId);
+      if (!user) {
+        throw new AppError('User not found', 404);
+      }
+
+      res.json({
+        success: true,
+        data: { ...user, password: undefined }
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-};
 
-export const getAllUsers = async (
-  req: Request,
-  res: Response<UserWithoutPassword[]>,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    // TODO: Implement get all users logic
-    // Requirements:
-    // - Only admins and super admins can access
-    // - Return all users without passwords
-    // - Use authorizeRoles middleware or implement authorization check
-    // - Map all users to exclude passwords
+  // GET /api/users
+  static async getAllUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const currentUser = (req as any).user as AuthenticatedUser;
 
-    res.status(501).json({ error: "Not implemented" } as any);
-  } catch (error) {
-    next(error);
+      // Check authorization - only admin/super_admin can list users
+      if (currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
+        throw new AppError('Insufficient permissions', 403);
+      }
+
+      const users = await UserService.getAllUsers();
+
+      res.json({
+        success: true,
+        data: users.map(user => ({ ...user, password: undefined }))
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-};
+}

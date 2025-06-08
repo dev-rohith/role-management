@@ -1,16 +1,20 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
-import { UserModel } from '../models/user.js';
-import { UnauthorizedError } from '../utils/errors.js';
+import { UserModel } from '../models/user';
+import { UnauthorizedError } from '../utils/errors';
+import { User } from '../types/index';
 
+export interface AuthenticatedRequest extends Request {
+  user?: User;
+}
 export const authenticateToken = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = authHeader && authHeader.split(' ')[1] as string;
 
     if (!token) {
       throw new UnauthorizedError('Access token required');

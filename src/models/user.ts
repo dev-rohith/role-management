@@ -1,7 +1,7 @@
-import { db } from "./database.js";
-import { users, type SelectUser, type InsertUser } from "./schema.js";
+import { db } from "../config/database";
+import { users, type SelectUser, type InsertUser } from "./schema";
 import { eq } from "drizzle-orm";
-import type { User, CreateUserData } from "../../types/index.js";
+import type { User } from "../types/index";
 
 export class UserModel {
   static async findById(id: string): Promise<User | null> {
