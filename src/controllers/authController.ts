@@ -1,55 +1,54 @@
 import type { Request, Response, NextFunction } from "express";
 import { UserModel } from "../models/user";
 import { v4 as uuidv4 } from "uuid";
-import {
-  comparePassword,
-  generateToken,
-  excludePassword,
-  hashPassword,
-} from "../utils/helpers";
+import { comparePassword, generateToken, excludePassword, hashPassword,} from "../utils/helpers";
 import { loginSchema, registerSchema } from "../utils/validation";
 import { ConflictError, UnauthorizedError, ValidationError } from "../utils/errors";
-import type {
-  CreateUser,
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-} from "../types/index";
+import type {CreateUser, LoginRequest, LoginResponse,RegisterRequest,RegisterResponse,} from "../types/index";
 
-export const login = async (
-  req: Request<LoginRequest>,
-  res: Response<LoginResponse>,
-  next: NextFunction
-): Promise<void> => {
+
+// NOTE:  Please check the types defined in `types/index.ts` before adding new ones.
+//        Use the existing types where appropriate.
+//        If needed, update or extend them to fit the current requirements.
+//        This helps us assess your understanding of TypeScript types.
+
+// NOTE: Carefully review all imported modules and how they are used in the code.
+//        Understand the logic and context before making any changes.
+//        This ensures that any modifications you make are accurate and consistent.
+
+
+export const login = async (req: Request<LoginRequest>,res: Response<LoginResponse>,next: NextFunction): Promise<void> => {
   try {
-    const validation = loginSchema.safeParse(req.body);
-    if (!validation.success) {
-      throw new ValidationError("Invalid email or password format");
-    }
+    // TODO: Validate the request body using loginSchema
+    // Expected req.body format: { email: string, password: string }
+    // Use loginSchema.safeParse() method to validate
+    // If validation fails, throw new ValidationError("Invalid email or password format")
+    
 
-    const { email, password } = validation.data;
+    // TODO: Extract email and password from validated data
+    // Get email and password from validation.data
+    
 
-    const user = await UserModel.findByEmail(email);
-    if (!user) {
-      throw new UnauthorizedError("Invalid credentials");
-    }
+    // TODO: Find user by email
+    // Use UserModel.findByEmail() method
+    // If user not found, throw new UnauthorizedError("Invalid credentials")
+    
 
-    if (user.status === "inactive") {
-      throw new UnauthorizedError("Account is deactivated");
-    }
+    // TODO: Check if user account is active
+    // Check if user.status === "inactive"
+    // If inactive, throw new UnauthorizedError("Account is deactivated")
+    
 
-    const isValidPassword = await comparePassword(password, user.password);
-    if (!isValidPassword) {
-      throw new UnauthorizedError("Invalid credentials");
-    }
+    // TODO: Verify password
+    // Use comparePassword() helper function to compare provided password with user.password
+    // If password doesn't match, throw new UnauthorizedError("Invalid credentials")
+    
 
-    const token = generateToken(user.id.toString());
-
-    res.json({
-      token,
-      user: excludePassword(user),
-    });
+    // TODO: Generate JWT token and send response
+    // Use generateToken() helper with user.id.toString()
+    // Send response with format: { token: string, user: UserObject (without password) }
+    // Use excludePassword() helper to remove password from user object
+    
 
   } catch (error) {
     next(error);
@@ -62,38 +61,46 @@ export const register = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const validation = registerSchema.safeParse(req.body);
-    if (!validation.success) {
-      throw new ValidationError("Invalid registration data");
-    }
+    // TODO: Validate the request body using registerSchema
+    // Expected req.body format: { email: string, password: string, firstName: string, lastName: string }
+    // Use registerSchema.safeParse() method to validate
+    // If validation fails, throw new ValidationError("Invalid registration data")
+    
 
-    const { email, password, firstName, lastName } = validation.data;
+    // TODO: Extract user data from validated request
+    // Get email, password, firstName, lastName from validation.data
+    
 
-    const existingUser = await UserModel.findByEmail(email);
-   if (existingUser) {
-      throw new ConflictError('User already exists');
-    }
+    // TODO: Check if user already exists
+    // Use UserModel.findByEmail() to check if user with this email exists
+    // If user exists, throw new ConflictError('User already exists')
+    
 
-    const hashedPassword = await hashPassword(password);
+    // TODO: Hash the password
+    // Use hashPassword() helper function to hash the plain text password
+    
 
-    const userData: CreateUser = {
-      id: uuidv4(),
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-      role: "user",
-      status: "active",
-    };
+    // TODO: Create user data object
+    // Create userData object with:
+    // - id: generate using uuidv4()
+    // - email: from request
+    // - password: hashed password
+    // - firstName: from request
+    // - lastName: from request
+    // - role: set to "user"
+    // - status: set to "active"
+    
 
-    const newUser = await UserModel.create(userData);
+    // TODO: Create new user in database
+    // Use UserModel.create() method with userData
+    
 
-    const token = generateToken(newUser.id.toString());
+    // TODO: Generate token and send response
+    // Generate JWT token using generateToken() with newUser.id.toString()
+    // Send 201 status response with format: { token: string, user: UserObject (without password) }
+    // Use excludePassword() helper to remove password from user object
+    
 
-    res.status(201).json({
-      token,
-      user: excludePassword(newUser),
-    });
   } catch (error) {
     next(error);
   }

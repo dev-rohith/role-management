@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { InsertUser } from "../models/schema";
 
 // TODO: Review this entire types file carefully don't blindly go with this types.
@@ -14,6 +15,10 @@ export interface User {
   status: UserStatus;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface AuthenticatedRequest extends Request {
+  user?: User;
 }
 
 export interface RegisterRequest {

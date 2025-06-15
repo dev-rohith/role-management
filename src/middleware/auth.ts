@@ -1,18 +1,20 @@
 import jwt from 'jsonwebtoken';
-import type { Request, Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 import { UserModel } from '../models/user';
 import { UnauthorizedError } from '../utils/errors';
-import { User } from '../types/index';
+import { AuthenticatedRequest } from '../types';
 
-export interface AuthenticatedRequest extends Request {
-  user?: User;
-}
+// NOTE:  Please check the types defined in `types/index.ts` before adding new ones.
+//        Use the existing types where appropriate.
+//        If needed, update or extend them to fit the current requirements.
+//        This helps us assess your understanding of TypeScript types.
 
-export const authenticateToken = async (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+// NOTE: Carefully review all imported modules and how they are used in the code.
+//        Understand the logic and context before making any changes.
+//        This ensures that any modifications you make are accurate and consistent.
+
+
+export const authenticateToken = async (req: AuthenticatedRequest,res: Response,next: NextFunction): Promise<void> => {
   try {
     const authHeader = req.headers['authorization'];
     // TODO: Extract token from authHeader
@@ -25,12 +27,17 @@ export const authenticateToken = async (
 
     // TODO: Fetch user by ID from token payload
 
-    // TODO: Check if user exists and is active
+    // TODO: Check if user exists and is active use the UserModel for db operations
 
     // TODO: Attach user to req.user
 
     next();
+    
   } catch (error) {
-    // TODO: Handle JWT errors and forward other errors
+     if (error instanceof jwt.JsonWebTokenError) {
+      next(new UnauthorizedError('Invalid token'));
+    } else {
+      next(error);
+    }
   }
 };
