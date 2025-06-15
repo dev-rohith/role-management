@@ -1,17 +1,10 @@
 import jwt from 'jsonwebtoken';
-import type { Request, Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 import { UserModel } from '../models/user';
 import { UnauthorizedError } from '../utils/errors';
-import { User } from '../types/index';
+import { AuthenticatedRequest } from '../types';
 
-export interface AuthenticatedRequest extends Request {
-  user?: User;
-}
-export const authenticateToken = async (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const authenticateToken = async (req: AuthenticatedRequest,res: Response,next: NextFunction): Promise<void> => {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1] as string;
@@ -29,6 +22,7 @@ export const authenticateToken = async (
 
     req.user = user;
     next();
+    
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       next(new UnauthorizedError('Invalid token'));

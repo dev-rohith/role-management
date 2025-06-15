@@ -5,7 +5,6 @@ import type { User, UserRole, UserStatus, AuthenticatedUser } from "../types";
 import { AppError } from "../utils/errors";
 
 export class UserService {
-  // Role hierarchy check
   static canModifyUser(
     currentUser: AuthenticatedUser,
     targetUser: User
@@ -21,7 +20,6 @@ export class UserService {
     return roleHierarchy[currentUser.role] > roleHierarchy[targetUser.role];
   }
 
-  // Check if user can change role
   static canChangeRole(
     currentUser: AuthenticatedUser,
     newRole: UserRole
@@ -29,7 +27,6 @@ export class UserService {
     return currentUser.role === "super_admin";
   }
 
-  // Check if user can change status
   static canChangeStatus(
     currentUser: AuthenticatedUser,
     targetUser: User
@@ -45,18 +42,15 @@ export class UserService {
     return false;
   }
 
-  // Get user by ID (id is string because varchar)
   static async getUserById(id: string): Promise<User | null> {
     const result = await db.select().from(users).where(eq(users.id, id));
     return result[0] || null;
   }
 
-  // Get all users
   static async getAllUsers(): Promise<User[]> {
     return await db.select().from(users);
   }
 
-  // Update user role
   static async updateUserRole(id: string, role: UserRole): Promise<User> {
     const result = await db
       .update(users)
@@ -71,7 +65,6 @@ export class UserService {
     return result[0];
   }
 
-  // Update user status
   static async updateUserStatus(id: string, status: UserStatus): Promise<User> {
     const result = await db
       .update(users)
