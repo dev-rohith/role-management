@@ -1,4 +1,4 @@
-# Role Management System Assessment - TypeScript
+# Role Management Assessment - TypeScript
 ### Note: Please read all the instructions before starting the assessment.
 ## Overview
 
