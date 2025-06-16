@@ -35,22 +35,22 @@ export class UserController {
 
        TODO: Validate the role using validation function
        Use validateUpdateRole({ role }) function
-       If validation fails, throw new AppError('Invalid role', 400)
+       If validation fails, throw new AppError('Invalid role', appropriate status)
       
 
        TODO: Check if current user has permission to change roles
        Use UserService.canChangeRole(currentUser, role) method
-       If no permission, throw new AppError('Insufficient permissions', 403)
+       If no permission, throw new AppError('Insufficient permissions', appropriate status)
       
 
        TODO: Find the target user to be updated
        Use UserService.getUserById(userId) method
-       If user not found, throw new AppError('User not found', 404)
+       If user not found, throw new AppError('User not found', appropriate status)
       
 
        TODO: Check if current user can modify the target user
        Use UserService.canModifyUser(currentUser, targetUser) method
-       If cannot modify, throw new AppError('Cannot modify this user', 403)
+       If cannot modify, throw new AppError('Cannot modify this user', appropriate status)
       
 
        TODO: Update the user's role
@@ -59,7 +59,6 @@ export class UserController {
 
        TODO: Send success response
        Send response with format: { success: true, data: user object without password }
-       Remove password field using: { ...updatedUser, password: undefined }
       */
 
     } catch (error) {
@@ -85,7 +84,7 @@ export class UserController {
 
        TODO: Validate the status using validation function
        Use validateUpdateStatus({ status }) function
-       If validation fails, throw new AppError('Invalid status', 400)
+       If validation fails, throw new AppError('Invalid status', appropriate status)
       
 
        TODO: Find the target user to be updated
@@ -155,7 +154,7 @@ export class UserController {
 
        TODO: Check if current user has admin permissions
        Only 'admin' and 'super_admin' roles can view all users
-       If not admin or super_admin, throw new AppError('Insufficient permissions', 403)
+       If not admin or super_admin, throw AppError object with Insufficient permissions, )
       
 
        TODO: Get all users from database
