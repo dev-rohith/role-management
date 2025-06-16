@@ -24,7 +24,7 @@ You are tasked with completing a role-based user management system built with Ty
 - Can only view their own profile
 - Cannot perform administrative actions
 
-## Note: Do not make any changes to the test case files or the workflows/scripts, as doing so will lead to automatic disqualification.
+### Note: Do not make any changes to the test case files or the workflows/scripts, as doing so will lead to automatic disqualification.
 
 ### What's Already Implemented
 
