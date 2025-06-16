@@ -4,15 +4,16 @@ import { UserModel } from '../models/user';
 import { UnauthorizedError } from '../utils/errors';
 import { AuthenticatedRequest } from '../types';
 
-// NOTE:  Please check the types defined in `types/index.ts` before adding new ones.
-//        Use the existing types where appropriate.
-//        If needed, update or extend them to fit the current requirements.
-//        This helps us assess your understanding of TypeScript types.
+/*
+ NOTE:  Please check the types defined in `types/index.ts` before adding new ones.
+        Use the existing types where appropriate.
+        If needed, update or extend them to fit the current requirements.
+        This helps us assess your understanding of TypeScript types.
 
-// NOTE: Carefully review all imported modules and how they are used in the code.
-//        Understand the logic and context before making any changes.
-//        This ensures that any modifications you make are accurate and consistent.
-
+ NOTE: Carefully review all imported modules and how they are used in the code.
+        Understand the logic and context before making any changes.
+        This ensures that any modifications you make are accurate and consistent.
+*/
 
 export const authenticateToken = async (req: AuthenticatedRequest,res: Response,next: NextFunction): Promise<void> => {
   try {
