@@ -20,47 +20,24 @@ export class UserController {
   static async updateUserRole(req: Request, res: Response, next: NextFunction) {
     try {
       /*
-       TODO: Extract userId from request parameters
-       Get userId from req.params.id and cast to string
+       1. Extract userId from req.params.id
       
-
-       TODO: Get current authenticated user from request
-       Cast (req as any).user as AuthenticatedUser type
-  
-
-       TODO: Extract role from request body
-       Expected req.body format: { role: string }
-       Get role from req.body with UpdateRoleRequest type
+       2. Get current user - cast (req as any).user to AuthenticatedUser type
       
-
-       TODO: Validate the role using validation function
-       Use validateUpdateRole({ role }) function
-       If validation fails, throw new AppError('Invalid role', appropriate status)
+       3. Extract role from req.body using UpdateRoleRequest type
       
-
-       TODO: Check if current user has permission to change roles
-       Use UserService.canChangeRole(currentUser, role) method
-       If no permission, throw new AppError('Insufficient permissions', appropriate status)
+       4. Use validateUpdateRole function - check if validation fails, throw AppError with appropriate status
       
-
-       TODO: Find the target user to be updated
-       Use UserService.getUserById(userId) method
-       If user not found, throw new AppError('User not found', appropriate status)
+       5. Use UserService.canChangeRole method - if false, throw AppError with appropriate status
       
-
-       TODO: Check if current user can modify the target user
-       Use UserService.canModifyUser(currentUser, targetUser) method
-       If cannot modify, throw new AppError('Cannot modify this user', appropriate status)
+       6. Use UserService.getUserById - if null, throw AppError with appropriate status
       
-
-       TODO: Update the user's role
-       Use UserService.updateUserRole(userId, role) method
+       7. Use UserService.canModifyUser - if false, throw AppError with appropriate status
       
-
-       TODO: Send success response
-       Send response with format: { success: true, data: user object without password }
+       8. Use UserService.updateUserRole method
+      
+       9. Send response with success: true format, exclude password field
       */
-
     } catch (error) {
       next(error);
     }
@@ -69,43 +46,22 @@ export class UserController {
   static async updateUserStatus(req: Request, res: Response, next: NextFunction) {
     try {
       /*
-       TODO: Extract userId from request parameters
-       Get userId from req.params.id and cast to string
+       1. Extract userId from params
       
-
-       TODO: Get current authenticated user from request
-       Cast (req as any).user as AuthenticatedUser type
+       2. Get authenticated user from request
       
-
-       TODO: Extract status from request body
-       Expected req.body format: { status: string }
-       Get status from req.body with UpdateStatusRequest type
+       3. Extract status using UpdateStatusRequest type
       
-
-       TODO: Validate the status using validation function
-       Use validateUpdateStatus({ status }) function
-       If validation fails, throw new AppError('Invalid status', appropriate status)
+       4. Use validateUpdateStatus - handle validation failure with AppError
       
-
-       TODO: Find the target user to be updated
-       Use UserService.getUserById(userId) method
-       If user not found, throw new AppError('User not found', 404)
+       5. Use UserService.getUserById - handle user not found with AppError and appropriate status
       
-
-       TODO: Check if current user has permission to change status
-       Use UserService.canChangeStatus(currentUser, targetUser) method
-       If no permission, throw new AppError('Insufficient permissions', 403)
+       6. Use UserService.canChangeStatus - handle permission failure with AppError and appropriate status
       
-
-       TODO: Update the user's status
-       Use UserService.updateUserStatus(userId, status) method
-  
-
-       TODO: Send success response
-       Send response with format: { success: true, data: user object without password }
-       Remove password field using: { ...updatedUser, password: undefined }
+       7. Use UserService.updateUserStatus method
+      
+       8. Return success response, remove password field
       */
-
     } catch (error) {
       next(error);
     }
@@ -114,32 +70,16 @@ export class UserController {
   static async getUserProfile(req: Request, res: Response, next: NextFunction) {
     try {
       /*
-       TODO: Extract userId from request parameters
-       Get userId from req.params.id and cast to string
+       1. Extract userId from params
       
-
-       TODO: Get current authenticated user from request
-       Cast (req as any).user as AuthenticatedUser type
-  
-
-       TODO: Check if current user can view this profile
-       User can view if:
-       - currentUser.id === userId (viewing own profile)
-       - currentUser.role === 'admin' 
-       - currentUser.role === 'super_admin'
-       If no permission, throw new AppError('Insufficient permissions', 403)
+       2. Get current user using AuthenticatedUser type
       
-
-       TODO: Find the user by ID
-       Use UserService.getUserById(userId) method
-       If user not found, throw new AppError('User not found', 404)
+       3. Check permissions: own profile OR admin/super_admin role - use AppError with appropriate status if denied
       
-
-       TODO: Send success response
-       Send response with format: { success: true, data: user object without password }
-       Remove password field using: { ...user, password: undefined }
+       4. Use UserService.getUserById - handle not found with AppError and appropriate status
+      
+       5. Return success response without password
       */
-
     } catch (error) {
       next(error);
     }
@@ -148,24 +88,14 @@ export class UserController {
   static async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
       /*
-       TODO: Get current authenticated user from request
-       Cast (req as any).user as AuthenticatedUser type
+       1. Get current user using AuthenticatedUser type
       
-
-       TODO: Check if current user has admin permissions
-       Only 'admin' and 'super_admin' roles can view all users
-       If not admin or super_admin, throw AppError object with Insufficient permissions, )
+       2. Check if role is admin or super_admin - use AppError with appropriate status if not
       
-
-       TODO: Get all users from database
-       Use UserService.getAllUsers() method
+       3. Use UserService.getAllUsers method
       
-
-       TODO: Send success response with all users
-       Send response with format: { success: true, data: array of user objects without passwords }
-       Remove password from each user: users.map(user => ({ ...user, password: undefined }))
+       4. Return success response, remove password from each user in array
       */
-
     } catch (error) {
       next(error);
     }
