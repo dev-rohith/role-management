@@ -9,20 +9,18 @@ You are tasked with completing a role-based user management system built with Ty
 #### User Roles & Permissions
 
 ##### Super Admin
-- Can promote users to admin or super admin
-- Can deactivate any user or admin
-- Can demote admins to regular users
-- Can view any user's profile
-- Can reactivate deactivated users
-
+ Can promote users to admin or super admin
+ Can deactivate any user or admin
+ Can demote admins to regular users
+ Can view any user's profile
+ Can reactivate deactivated users
 #### Admin
-- Can deactivate regular users (but cannot reactivate them)
-- Can view any user's profile
-- Cannot modify other admins or super admins
-
+ Can deactivate regular users (but cannot reactivate them)
+ Can view any user's profile
+ Cannot modify other admins or super admins
 #### User
-- Can only view their own profile
-- Cannot perform administrative actions
+ Can only view their own profile
+ Cannot perform administrative actions
 
 ### Note: Do not make any changes to the test case files or the workflows/scripts, as doing so will lead to automatic disqualification.
 
