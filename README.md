@@ -1,15 +1,14 @@
 # Role Management System Assessment - TypeScript
-
+### Note: Please read all the instructions before starting the assessment.
 ## Overview
 
 You are tasked with completing a role-based user management system built with TypeScript, Node.js, Express, and Drizzle ORM. The system has three user roles with specific permissions and capabilities.
 
-## System Requirements
+### Requirements
 
-### User Roles & Permissions
+#### User Roles & Permissions
 
-#### Super Admin
-
+##### Super Admin
 - Can promote users to admin or super admin
 - Can deactivate any user or admin
 - Can demote admins to regular users
@@ -17,15 +16,15 @@ You are tasked with completing a role-based user management system built with Ty
 - Can reactivate deactivated users
 
 #### Admin
-
 - Can deactivate regular users (but cannot reactivate them)
 - Can view any user's profile
 - Cannot modify other admins or super admins
 
 #### User
-
 - Can only view their own profile
 - Cannot perform administrative actions
+
+## Note: Do not make any changes to the test case files or the workflows/scripts, as doing so will lead to automatic disqualification.
 
 ### What's Already Implemented
 
@@ -60,7 +59,7 @@ You are tasked with completing a role-based user management system built with Ty
 ## Test Data
 
 The system will be seeded with:
-Refer the seed.ts file for data make sure you done npm run seed to db before this
+Refer the seed.ts file for data make sure you done `npm run seed` to db before this
 
 - 1 Super Admin (email: superadmin@test.com, password: password123)
 - 2 Admins (admin1@test.com, admin2@test.com)
@@ -74,6 +73,16 @@ Refer the seed.ts file for data make sure you done npm run seed to db before thi
 4. All tests passing (public)
 5. Clean, readable TypeScript code with proper types
 
+**What you have to find out and implement**
+```json
+controller
+   |___ authController
+   |___ userController
+middleware
+   |___ auth.ts
+```
+#### Note: Please go through all the source code, understand it thoroughly, and follow the comments for what needs to be done.
+
 #### 1. API Endpoints Implementation
 
 Complete the following endpoints with proper authorization:
@@ -84,28 +93,17 @@ Complete the following endpoints with proper authorization:
 - `GET /api/users` - List users (admin/super admin only)
 
 #### 2. Authorization Logic
-
 Implement role-based access control:
-
 - Validate user permissions for each action
 - Ensure users can only perform allowed operations
 - Handle edge cases (e.g., can't deactivate yourself)
 
 #### 3. Business Rules Implementation
-
 - Super admin can promote users to admin/super admin
 - Super admin can demote admins to users
 - Super admin can activate/deactivate anyone
 - Admin can only deactivate regular users
 - Users can only access their own profile
-
-## Technical Stack
-
-- **Backend**: Node.js with Express & TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
-- **Authentication**: JWT tokens
-- **Testing**: Jest with TypeScript support
-- **Validation**: Zod for schema validation
 
 ## Project Structure
 
@@ -124,10 +122,10 @@ src/
 
 ## Evaluation Criteria
 
-- **Functionality** (40%): All endpoints work as specified
-- **Security** (25%): Proper authorization and validation
-- **Code Quality** (20%): Clean, maintainable TypeScript code
-- **Error Handling** (15%): Appropriate error responses
+- **Functionality**  : All endpoints work as specified
+- **Security**       : Proper authorization and validation
+- **Code Quality**   : Clean, maintainable TypeScript code
+- **Error Handling** : Appropriate error responses
 
 ## Submission Instructions
 
@@ -139,31 +137,22 @@ src/
 
 ## API Endpoints Reference
 
-### Authentication
-
-- `POST /api/auth/login` - User login (PROVIDED)
-
-### User Management
-
+### Authentication (first implement auth)
+- `POST /api/auth/login` - User login (pending)
+- `POST /api/auth/register` - User registration (pending)
+### User Management (make sure you passing all testcases)
 - `PUT /api/users/:id/role` - Update user role
-
   - Body: `{ "role": "user" | "admin" | "super_admin" }`
   - Authorization: Super admin only
-
 - `PUT /api/users/:id/status` - Update user status
-
   - Body: `{ "status": "active" | "inactive" }`
   - Authorization: Admin/Super admin (with restrictions)
-
 - `GET /api/users/:id` - Get user profile
-
   - Authorization: Own profile or admin/super admin
-
 - `GET /api/users` - List all users
   - Authorization: Admin/Super admin only
 
 ## TypeScript Notes
-
 - All types are provided in `src/types/`
 - Use strict type checking
 - Implement proper error handling with custom error types
