@@ -30,7 +30,7 @@ export const authenticateToken = async (req: AuthenticatedRequest,res: Response,
 
     // TODO: Check if user exists and is active use the UserModel for db operations
 
-    // TODO: Attach user to req.user
+    // TODO: Attach user to req.user = user
 
     next();
     
