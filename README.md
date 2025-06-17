@@ -52,6 +52,8 @@ You are tasked with completing a role-based user management system built with Ty
 6. Run tests: `npm test`
 7. Run tests with watch(optional): `npm test:watch`
 
+Link: [local database setup](https://stackoverflow.com/questions/36629963/how-can-i-start-postgresql-on-windows)
+
 ## Hints
 
 - Install PostgreSQL locally for development and testing purposes.
