@@ -3,7 +3,6 @@
 ### Note: Please read all the instructions before starting the assessment.
 
 ## Overview
-
 You are tasked with completing a role-based user management system built with TypeScript, Node.js, Express, and Drizzle ORM. The system has three user roles with specific permissions and capabilities.
 
 ### Requirements
